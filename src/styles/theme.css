@@ -1,0 +1,293 @@
+/* ---------------------------------------------------------------------------
+   updatebase design tokens
+   primary #287bff on cool neutrals. no gradients. hairline-first elevation.
+   type: poppins (display) / sentient (emphasis) / manrope (body)
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-latin-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Sentient";
+  src: url("/fonts/sentient-variable.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sentient";
+  src: url("/fonts/sentient-variable-italic.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@theme {
+  /* ---- families ---- */
+  --font-display: "Poppins", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-emphasis: "Sentient", ui-serif, Georgia, Cambria, serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, monospace;
+
+  /* ---- brand ---- */
+  --color-primary: #287bff;
+  --color-primary-hover: #1a63d8;
+  --color-primary-active: #1550b5;
+  --color-primary-soft: #eef4ff;
+  --color-primary-soft-hover: #e0ebff;
+  --color-primary-line: #cbdffd;
+  --color-on-primary: #ffffff;
+
+  /* ---- neutrals (cool) ---- */
+  --color-canvas: #ffffff;
+  --color-surface: #f6f8fc;
+  --color-surface-2: #eef1f7;
+  --color-hairline: #e4e9f1;
+  --color-hairline-strong: #d3dae6;
+  --color-ink: #0b1220;
+  --color-ink-soft: #46536a;
+  --color-ink-muted: #6f7c92;
+  --color-on-ink: #ffffff;
+
+  /* dark band used for high contrast sections */
+  --color-band: #0b1220;
+  --color-band-line: #1d283c;
+  --color-band-soft: #141d2e;
+
+  /* ---- status ---- */
+  --color-success: #0f8a5f;
+  --color-success-soft: #e7f6ef;
+  --color-warning: #b26a00;
+  --color-warning-soft: #fdf3e2;
+  --color-danger: #c8382f;
+  --color-danger-soft: #fdeceb;
+  --color-focus: #287bff;
+
+  /* ---- radius ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 28px;
+  --radius-pill: 9999px;
+
+  /* ---- spacing scale (named, additive to tailwind numeric) ---- */
+  --spacing-3xs: 2px;
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 96px;
+
+  /* fluid vertical rhythm for sections: tight on phones, generous on desktop */
+  --spacing-section: clamp(4rem, 2.6rem + 7vw, 7.5rem);
+  --spacing-section-sm: clamp(2.75rem, 1.9rem + 4.2vw, 4.5rem);
+
+  /* ---- elevation: exactly two, both subtle ---- */
+  --shadow-subtle: 0 1px 2px rgba(11, 18, 32, 0.05);
+  --shadow-raised: 0 1px 2px rgba(11, 18, 32, 0.05), 0 6px 16px -10px rgba(11, 18, 32, 0.14);
+
+  /* ---- motion ---- */
+  --duration-instant: 90ms;
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- type scale ----
+     every display size is fluid. this is the fix for headings that used to sit
+     at a fixed 3.5rem and blow past the viewport on a phone. */
+
+  --text-display-2xl: clamp(2.5rem, 1.55rem + 4.3vw, 4.5rem);
+  --text-display-2xl--line-height: 1.02;
+  --text-display-2xl--font-weight: 600;
+  --text-display-2xl--letter-spacing: -0.035em;
+
+  --text-display-xl: clamp(2.125rem, 1.45rem + 3.1vw, 3.5rem);
+  --text-display-xl--line-height: 1.06;
+  --text-display-xl--font-weight: 600;
+  --text-display-xl--letter-spacing: -0.032em;
+
+  --text-display-lg: clamp(1.75rem, 1.3rem + 2.1vw, 2.75rem);
+  --text-display-lg--line-height: 1.12;
+  --text-display-lg--font-weight: 600;
+  --text-display-lg--letter-spacing: -0.028em;
+
+  --text-display-md: clamp(1.375rem, 1.15rem + 1.05vw, 1.875rem);
+  --text-display-md--line-height: 1.2;
+  --text-display-md--font-weight: 600;
+  --text-display-md--letter-spacing: -0.022em;
+
+  --text-display-sm: clamp(1.125rem, 1.03rem + 0.45vw, 1.3125rem);
+  --text-display-sm--line-height: 1.3;
+  --text-display-sm--font-weight: 600;
+  --text-display-sm--letter-spacing: -0.014em;
+
+  --text-display-xs: 1rem;
+  --text-display-xs--line-height: 1.4;
+  --text-display-xs--font-weight: 600;
+  --text-display-xs--letter-spacing: -0.008em;
+
+  /* body: lead copy is fluid too, so it never fights the headline on mobile */
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.55;
+  --text-lead--font-weight: 400;
+  --text-lead--letter-spacing: -0.005em;
+
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 400;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
+  --text-body-sm--font-weight: 400;
+
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.2;
+  --text-label--font-weight: 500;
+  --text-label--letter-spacing: -0.006em;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.35;
+  --text-caption--font-weight: 500;
+
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1;
+  --text-overline--font-weight: 600;
+  --text-overline--letter-spacing: 0.08em;
+
+  /* ---- layout ---- */
+  --container-page: 1180px;
+  --container-narrow: 760px;
+  --container-prose: 68ch;
+}
+
+/* --------------------------------------------------------------------------
+   dark mode. light is the default and the priority; dark is a faithful mirror.
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-canvas: #0a0f19;
+  --color-surface: #111827;
+  --color-surface-2: #18202f;
+  --color-hairline: #1f2937;
+  --color-hairline-strong: #2b3648;
+  --color-ink: #eef2f8;
+  --color-ink-soft: #a7b3c6;
+  --color-ink-muted: #8090a8;
+  --color-on-ink: #0a0f19;
+
+  --color-primary: #4d93ff;
+  --color-primary-hover: #6aa5ff;
+  --color-primary-active: #85b6ff;
+  --color-primary-soft: #14203a;
+  --color-primary-soft-hover: #1a2a4a;
+  --color-primary-line: #24365a;
+  --color-on-primary: #05101f;
+
+  --color-band: #060b14;
+  --color-band-line: #1a2434;
+  --color-band-soft: #0f1724;
+
+  --color-success: #3fbe8c;
+  --color-success-soft: #0e2a20;
+  --color-warning: #d99a3d;
+  --color-warning-soft: #2c2113;
+  --color-danger: #f0776c;
+  --color-danger-soft: #2e1616;
+  --color-focus: #6aa5ff;
+
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 16px -10px rgba(0, 0, 0, 0.7);
+}

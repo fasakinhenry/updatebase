@@ -1,96 +1,153 @@
-import { useEffect, useState } from "react";
-import { Cookie } from "@phosphor-icons/react";
-import { Button } from "../ui/Button";
+import { useEffect, useState } from 'react'
+import { Cookie } from '@phosphor-icons/react'
+import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
+import { SmartLink } from '@/components/ui/SmartLink'
+import { DEFAULT_CONSENT, readConsent, writeConsent, type ConsentPreferences } from '@/lib/consent'
+import { cn } from '@/lib/cn'
 
-const STORAGE_KEY = "updatebase-cookie-consent";
-
-type Consent = "accepted" | "essential-only";
+const options = [
+  {
+    key: 'essential' as const,
+    label: 'essential',
+    description: 'keeps you signed in and keeps your account secure. always on.',
+    locked: true,
+  },
+  {
+    key: 'analytics' as const,
+    label: 'analytics',
+    description: 'tells us which pages work and which ones lose people.',
+    locked: false,
+  },
+  {
+    key: 'personalization' as const,
+    label: 'personalization',
+    description: 'uses what you open to pick the updates you see first.',
+    locked: false,
+  },
+]
 
 export function CookieConsent() {
-  const [visible, setVisible] = useState(() => !window.localStorage.getItem(STORAGE_KEY));
-  const [managing, setManaging] = useState(false);
-  const [analytics, setAnalytics] = useState(true);
+  const [visible, setVisible] = useState(false)
+  const [managing, setManaging] = useState(false)
+  const [prefs, setPrefs] = useState<ConsentPreferences>(DEFAULT_CONSENT)
 
   useEffect(() => {
-    const openPreferences = () => {
-      setVisible(true);
-      setManaging(true);
-    };
-    document.getElementById("footer-cookie-preferences")?.addEventListener("click", openPreferences);
-    return () =>
-      document
-        .getElementById("footer-cookie-preferences")
-        ?.removeEventListener("click", openPreferences);
-  }, []);
+    // wait a beat so the banner never competes with the first paint
+    const timer = window.setTimeout(() => {
+      if (!readConsent()) setVisible(true)
+    }, 900)
+    return () => window.clearTimeout(timer)
+  }, [])
 
-  const save = (consent: Consent) => {
-    window.localStorage.setItem(STORAGE_KEY, consent);
-    setVisible(false);
-    setManaging(false);
-  };
+  const decide = (next: ConsentPreferences) => {
+    writeConsent(next)
+    setManaging(false)
+    setVisible(false)
+  }
 
-  if (!visible) return null;
+  if (!visible) return null
 
   return (
-    <div
-      role="dialog"
-      aria-label="cookie preferences"
-      className="fixed inset-x-0 bottom-0 z-[60] p-md md:p-lg"
-    >
-      <div className="container-page">
-        <div className="mx-auto flex max-w-2xl flex-col gap-md rounded-xl border border-hairline bg-paper p-lg shadow-card">
-          <div className="flex items-start gap-sm">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-cloud text-ink">
-              <Cookie size={18} />
-            </span>
-            <div>
-              <p className="font-body text-body-md font-medium text-ink">we use cookies</p>
-              <p className="mt-xxs font-body text-body-sm text-ink-soft">
-                we use cookies to keep you signed in and understand how updatebase is used. you can
-                accept all cookies or manage your preferences.
+    <>
+      <div
+        role="region"
+        aria-label="cookie preferences"
+        className={cn(
+          'fixed inset-x-0 bottom-0 z-[90] px-4 pb-4 sm:left-auto sm:right-6 sm:max-w-md sm:pb-6',
+          'motion-safe:animate-[ub-toast-in_320ms_cubic-bezier(0.16,1,0.3,1)_both]',
+        )}
+      >
+        <div className="rounded-2xl border border-hairline bg-canvas p-5 shadow-raised">
+          <div className="flex items-start gap-3">
+            <Cookie size={20} weight="fill" aria-hidden="true" className="mt-0.5 shrink-0 text-primary" />
+            <div className="min-w-0">
+              <p className="text-label text-ink">we use a few cookies</p>
+              <p className="mt-1.5 text-body-sm text-ink-soft">
+                essential ones keep you signed in. the rest are yours to decide. read the{' '}
+                <SmartLink
+                  to="/privacy"
+                  className="text-primary underline underline-offset-4 hover:text-primary-hover"
+                >
+                  privacy policy
+                </SmartLink>
+                .
               </p>
             </div>
           </div>
 
-          {managing && (
-            <div className="flex items-center justify-between rounded-lg border border-hairline bg-cloud px-md py-sm">
-              <div>
-                <p className="font-body text-body-sm font-medium text-ink">analytics cookies</p>
-                <p className="font-body text-body-sm text-ink-soft">helps us improve updatebase</p>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={analytics}
-                onClick={() => setAnalytics((v) => !v)}
-                className={`relative h-6 w-11 shrink-0 rounded-pill transition-colors duration-fast ease-standard cursor-pointer ${
-                  analytics ? "bg-cta" : "bg-hairline"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-pill bg-paper transition-transform duration-fast ease-standard ${
-                    analytics ? "translate-x-[22px]" : "translate-x-0.5"
-                  }`}
-                />
-              </button>
-            </div>
-          )}
-
-          <div className="flex flex-col-reverse gap-sm sm:flex-row sm:justify-end">
-            {!managing && (
-              <Button variant="secondary" size="md" onClick={() => setManaging(true)}>
-                manage preferences
-              </Button>
-            )}
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <Button
-              size="md"
-              onClick={() => save(managing && !analytics ? "essential-only" : "accepted")}
+              size="sm"
+              block
+              icon={null}
+              onClick={() => decide({ essential: true, analytics: true, personalization: true })}
             >
-              {managing ? "save preferences" : "accept all"}
+              accept all
+            </Button>
+            <Button size="sm" variant="secondary" block onClick={() => decide(DEFAULT_CONSENT)}>
+              essential only
+            </Button>
+            <Button size="sm" variant="ghost" block onClick={() => setManaging(true)}>
+              manage
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+
+      <Dialog
+        open={managing}
+        onClose={() => setManaging(false)}
+        title="cookie preferences"
+        description="turn on only what you are comfortable with. you can change this any time."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setManaging(false)}>
+              cancel
+            </Button>
+            <Button onClick={() => decide(prefs)}>save preferences</Button>
+          </>
+        }
+      >
+        <ul className="flex flex-col gap-3">
+          {options.map((option) => {
+            const checked = option.locked ? true : prefs[option.key]
+            return (
+              <li key={option.key}>
+                <label
+                  className={cn(
+                    'flex items-start gap-3 rounded-xl border border-hairline p-4 transition-colors duration-fast',
+                    option.locked ? 'cursor-not-allowed bg-surface' : 'hover:border-hairline-strong',
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    disabled={option.locked}
+                    onChange={(event) =>
+                      setPrefs((current) => ({ ...current, [option.key]: event.target.checked }))
+                    }
+                    className="mt-0.5 size-4 shrink-0 accent-primary"
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-label text-ink">
+                      {option.label}
+                      {option.locked && (
+                        <span className="ml-2 text-caption font-normal text-ink-muted">
+                          always on
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-1 block text-body-sm text-ink-soft">
+                      {option.description}
+                    </span>
+                  </span>
+                </label>
+              </li>
+            )
+          })}
+        </ul>
+      </Dialog>
+    </>
+  )
 }

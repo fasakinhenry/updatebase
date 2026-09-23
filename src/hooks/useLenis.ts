@@ -1,32 +1,61 @@
-import { useEffect } from "react";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
-gsap.registerPlugin(ScrollTrigger);
+/**
+ * lenis smooth scroll, wired to gsap's ticker so scroll driven animations and
+ * the scroll position are updated on the same frame. disabled outright when
+ * the user asks for reduced motion.
+ */
+export function useLenis(enabled = true) {
+  const { pathname } = useLocation()
 
-export function useLenis() {
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    if (!enabled) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      smoothWheel: true,
-    });
+    let dispose = () => {}
+    let cancelled = false
 
-    lenis.on("scroll", ScrollTrigger.update);
+    void (async () => {
+      const [{ default: Lenis }, { default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import('lenis'),
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ])
+      if (cancelled) return
 
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
+      gsap.registerPlugin(ScrollTrigger)
+
+      const lenis = new Lenis({
+        duration: 1.05,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        // native momentum on touch feels better than a simulated one
+        syncTouch: false,
+      })
+
+      const onScroll = () => ScrollTrigger.update()
+      lenis.on('scroll', onScroll)
+
+      const raf = (time: number) => lenis.raf(time * 1000)
+      gsap.ticker.add(raf)
+      gsap.ticker.lagSmoothing(0)
+
+      dispose = () => {
+        lenis.off('scroll', onScroll)
+        gsap.ticker.remove(raf)
+        lenis.destroy()
+      }
+    })()
 
     return () => {
-      lenis.destroy();
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
-    };
-  }, []);
+      cancelled = true
+      dispose()
+    }
+  }, [enabled])
+
+  // a route change should always start at the top, before the transition paints
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [pathname])
 }

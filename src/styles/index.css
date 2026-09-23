@@ -1,0 +1,260 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+  }
+
+  /* lenis drives scrolling, so native smooth scroll must stay off or the two
+     animate the same scrollTop and fight each other. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* headings default to the display face so a stray h2 can never fall back to
+     body type, and balance so short headlines never leave one orphan word. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p, li {
+    text-wrap: pretty;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a,
+  button,
+  [role="button"],
+  summary,
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* pointer users get hover affordances without the sticky focus ring */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  img, video, svg, canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* images always declare a ratio so nothing reflows while loading (CLS = 0) */
+  img[width][height] {
+    height: auto;
+  }
+
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: var(--spacing-lg);
+  }
+
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: var(--spacing-xl);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: var(--spacing-2xl);
+    }
+  }
+}
+
+@layer utilities {
+  /* readable measure for lead and body copy. long lines are the other half of
+     why the old hero paragraph read badly. */
+  .measure {
+    max-width: 54ch;
+  }
+
+  .measure-tight {
+    max-width: 44ch;
+  }
+
+  .measure-wide {
+    max-width: var(--container-prose);
+  }
+
+  .emphasis {
+    font-family: var(--font-emphasis);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .hairline-t { border-top-width: 1px; }
+  .hairline-b { border-bottom-width: 1px; }
+}
+
+/* --------------------------------------------------------------------------
+   native view transitions
+   -------------------------------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: ub-fade-out var(--duration-fast) var(--ease-standard) both;
+}
+
+::view-transition-new(root) {
+  animation: ub-fade-in var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes ub-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes ub-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   scroll reveal
+   the hidden state is applied by css only once the inline boot script proves
+   js is alive, so content is never stranded invisible and there is no flash of
+   visible content before gsap takes over.
+   -------------------------------------------------------------------------- */
+.has-js [data-reveal] > * {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.has-js [data-reveal="self"] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .has-js [data-reveal] > *,
+  .has-js [data-reveal="self"] {
+    opacity: 1;
+    will-change: auto;
+  }
+}
+
+@keyframes ub-toast-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ub-dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}

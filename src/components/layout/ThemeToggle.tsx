@@ -1,17 +1,39 @@
-import { Moon, Sun } from "@phosphor-icons/react";
-import { useTheme } from "../../hooks/useTheme";
+import { useEffect } from 'react'
+import { Moon, Sun } from '@phosphor-icons/react'
+import { hydrateTheme, useThemeStore } from '@/stores/theme'
+import { cn } from '@/lib/cn'
 
-export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+export function ThemeToggle({ className }: { className?: string }) {
+  const resolved = useThemeStore((s) => s.resolved)
+  const toggle = useThemeStore((s) => s.toggle)
+  const syncSystem = useThemeStore((s) => s.syncSystem)
+
+  useEffect(() => {
+    hydrateTheme()
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    mq.addEventListener('change', syncSystem)
+    return () => mq.removeEventListener('change', syncSystem)
+  }, [syncSystem])
+
+  const next = resolved === 'dark' ? 'light' : 'dark'
 
   return (
     <button
       type="button"
-      onClick={toggleTheme}
-      aria-label={theme === "light" ? "switch to dark mode" : "switch to light mode"}
-      className="flex h-9 w-9 items-center justify-center rounded-md border border-hairline bg-paper text-ink-soft transition-colors duration-fast ease-standard hover:text-ink hover:bg-cloud cursor-pointer"
+      onClick={toggle}
+      title={`switch to ${next} mode`}
+      aria-label={`switch to ${next} mode`}
+      className={cn(
+        'inline-flex size-10 items-center justify-center rounded-lg text-ink-soft',
+        'transition-colors duration-fast ease-standard hover:bg-surface hover:text-ink',
+        className,
+      )}
     >
-      {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+      {resolved === 'dark' ? (
+        <Sun size={18} weight="bold" aria-hidden="true" />
+      ) : (
+        <Moon size={18} weight="bold" aria-hidden="true" />
+      )}
     </button>
-  );
+  )
 }

@@ -1,6 +1,14 @@
-import type { ReactNode } from "react";
-import { cn } from "../../lib/cn";
+import type { ElementType, ReactNode } from 'react'
+import { cn } from '@/lib/cn'
 
-export function Container({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("container-page", className)}>{children}</div>;
+export function Container({
+  children,
+  className,
+  as: Tag = 'div',
+}: {
+  children: ReactNode
+  className?: string
+  as?: ElementType
+}) {
+  return <Tag className={cn('container-page', className)}>{children}</Tag>
 }

@@ -1,69 +1,135 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
-import { cn } from "../../lib/cn";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { cn } from '@/lib/cn'
+import { SmartLink } from './SmartLink'
 
-type Variant = "cta" | "secondary" | "ghost";
-type Size = "md" | "lg";
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse' | 'danger'
+export type ButtonSize = 'sm' | 'md' | 'lg'
 
 const base =
-  "inline-flex items-center justify-center gap-xs font-body text-button-lg rounded-lg cursor-pointer transition-[background-color,color,border-color,transform,box-shadow] duration-base ease-standard disabled:opacity-50 disabled:pointer-events-none";
+  'relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg font-body font-medium ' +
+  'transition-[background-color,border-color,color,transform,opacity] duration-fast ease-standard ' +
+  'active:translate-y-px disabled:pointer-events-none disabled:opacity-55 aria-disabled:pointer-events-none aria-disabled:opacity-55'
 
-const variants: Record<Variant, string> = {
-  cta: "bg-cta text-on-cta shadow-button hover:bg-cta-deep hover:-translate-y-px hover:shadow-soft-lift",
+const variants: Record<ButtonVariant, string> = {
+  primary: 'bg-primary text-on-primary hover:bg-primary-hover active:bg-primary-active',
   secondary:
-    "bg-paper text-ink border border-hairline shadow-soft-lift hover:bg-cloud hover:-translate-y-px",
-  ghost: "bg-transparent text-ink hover:bg-cloud",
-};
-
-const sizes: Record<Size, string> = {
-  md: "px-lg py-[10px]",
-  lg: "px-xl py-[14px] text-body-md",
-};
-
-interface CommonProps {
-  variant?: Variant;
-  size?: Size;
-  icon?: ReactNode;
-  iconPosition?: "left" | "right";
-  children: ReactNode;
-  className?: string;
+    'border border-hairline-strong bg-canvas text-ink hover:border-ink-muted hover:bg-surface',
+  ghost: 'text-ink-soft hover:bg-surface hover:text-ink',
+  inverse: 'bg-canvas text-ink hover:bg-surface-2',
+  danger: 'bg-danger text-white hover:opacity-90',
 }
 
-type ButtonAsButton = CommonProps &
-  ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
+const sizes: Record<ButtonSize, string> = {
+  sm: 'h-9 px-3.5 text-body-sm',
+  md: 'h-11 px-5 text-label',
+  lg: 'h-13 px-6 text-body-lg',
+}
 
-type ButtonAsAnchor = CommonProps &
-  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
+interface Shared {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  icon?: ReactNode
+  iconPosition?: 'left' | 'right'
+  /** stretch to the width of the parent, which is what we want on mobile */
+  block?: boolean
+  loading?: boolean
+  children: ReactNode
+  className?: string
+}
 
-type ButtonProps = ButtonAsButton | ButtonAsAnchor;
+type NativeButtonProps = Shared &
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof Shared> & { to?: undefined; href?: undefined }
 
-export function Button({
-  variant = "cta",
-  size = "md",
-  icon,
-  iconPosition = "right",
-  children,
-  className,
-  ...props
-}: ButtonProps) {
-  const classes = cn(base, variants[variant], sizes[size], className);
+type LinkButtonProps = Shared & {
+  /** in-app route. prefetched on intent. */
+  to: string
+  href?: undefined
+  target?: string
+  rel?: string
+  onClick?: () => void
+}
 
-  if ("href" in props && props.href !== undefined) {
-    const { href, ...anchorProps } = props as ButtonAsAnchor;
+type AnchorButtonProps = Shared & {
+  /** external url or same page anchor */
+  href: string
+  to?: undefined
+  target?: string
+  rel?: string
+  onClick?: () => void
+}
+
+export type ButtonProps = NativeButtonProps | LinkButtonProps | AnchorButtonProps
+
+function Content({ icon, iconPosition, children, loading }: Shared) {
+  return (
+    <>
+      {loading ? (
+        <span
+          aria-hidden="true"
+          className="size-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+        />
+      ) : (
+        icon && iconPosition !== 'right' && <span aria-hidden="true" className="shrink-0">{icon}</span>
+      )}
+      <span>{children}</span>
+      {!loading && icon && iconPosition === 'right' && (
+        <span aria-hidden="true" className="shrink-0">{icon}</span>
+      )}
+    </>
+  )
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+  const {
+    variant = 'primary',
+    size = 'md',
+    icon,
+    iconPosition = 'right',
+    block,
+    loading = false,
+    children,
+    className,
+    ...rest
+  } = props
+
+  const classes = cn(base, variants[variant], sizes[size], block && 'w-full', className)
+  const shared = { variant, size, icon, iconPosition, loading, children }
+
+  if ('to' in rest && rest.to) {
+    const { to, ...linkRest } = rest as Omit<LinkButtonProps, keyof Shared>
     return (
-      <a href={href} className={classes} {...anchorProps}>
-        {icon && iconPosition === "left" ? icon : null}
-        {children}
-        {icon && iconPosition === "right" ? icon : null}
-      </a>
-    );
+      <SmartLink to={to} className={classes} {...linkRest}>
+        <Content {...shared} />
+      </SmartLink>
+    )
   }
 
-  const buttonProps = props as ButtonHTMLAttributes<HTMLButtonElement>;
+  if ('href' in rest && rest.href) {
+    const { href, target, rel, ...anchorRest } = rest as Omit<AnchorButtonProps, keyof Shared>
+    return (
+      <a
+        href={href}
+        target={target}
+        rel={target === '_blank' ? (rel ?? 'noopener noreferrer') : rel}
+        className={classes}
+        {...anchorRest}
+      >
+        <Content {...shared} />
+      </a>
+    )
+  }
+
+  const buttonRest = rest as Omit<NativeButtonProps, keyof Shared>
   return (
-    <button className={classes} {...buttonProps}>
-      {icon && iconPosition === "left" ? icon : null}
-      {children}
-      {icon && iconPosition === "right" ? icon : null}
+    <button
+      ref={ref}
+      type={buttonRest.type ?? 'button'}
+      className={classes}
+      aria-busy={loading || undefined}
+      {...buttonRest}
+      disabled={buttonRest.disabled ?? loading}
+    >
+      <Content {...shared} />
     </button>
-  );
-}
+  )
+})
