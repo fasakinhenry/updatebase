@@ -208,3 +208,85 @@ export interface Comment {
   replyCount: number
   createdAt: string
 }
+
+export type OrgRole = 'owner' | 'admin' | 'delegate'
+
+export type Channel =
+  | 'updatebase'
+  | 'whatsapp-channel'
+  | 'whatsapp-group'
+  | 'x'
+  | 'linkedin'
+  | 'instagram'
+  | 'facebook'
+  | 'telegram'
+
+export type TipMode = 'poster' | 'split' | 'organization'
+
+export interface Organization {
+  _id: string
+  id: string
+  name: string
+  handle: string
+  logoUrl?: string
+  bannerUrl?: string
+  bio?: string
+  tagline?: string
+  communityLink?: string
+  website?: string
+  categories?: Category[]
+  updateCounter: number
+  connectedChannels: Channel[]
+  tipMode: TipMode
+  orgSharePercent: number
+  followerCount: number
+  updateCount: number
+  memberCount: number
+  verifiedAt?: string | null
+  createdAt: string
+  viewer?: {
+    following: boolean
+    role: OrgRole | null
+    channels: Channel[]
+  }
+}
+
+export interface MembershipSummary {
+  organization: Organization
+  role: OrgRole
+  channels: Channel[]
+}
+
+export interface AiRuleSet {
+  _id: string
+  organization: string
+  rules: string[]
+  examples: { _id: string; input: string; output: string; note?: string }[]
+  lowercase: boolean
+  footer?: string
+  signatureTemplate: string
+  showNumber: boolean
+  numberPrefix: string
+  emojiVocabulary: string[]
+  categoryHeaders?: Record<string, string>
+  customPrompt?: string
+}
+
+export interface FormatResult {
+  header: string
+  body: string
+  category: Category
+  link: string | null
+  tags: string[]
+  deadline: string | null
+  footer: string
+  number: number
+  assembled: string
+  /** false when the deterministic formatter ran because ai was unavailable */
+  usedAi: boolean
+}
+
+export interface RenderResult {
+  renderings: Record<string, string>
+  limits: Record<string, number>
+}
