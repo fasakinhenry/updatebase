@@ -95,3 +95,116 @@ export interface ConversationState {
   multiSelect: boolean
   critique?: string | null
 }
+
+export interface OrganizationCard {
+  id: string
+  _id?: string
+  name: string
+  handle: string
+  logoUrl?: string
+  verifiedAt?: string | null
+  followerCount?: number
+}
+
+export interface UserCard {
+  id: string
+  _id?: string
+  name?: string
+  username?: string
+  avatarSeed?: string
+  avatarStyle?: string
+  photoUrl?: string
+  avatarMode?: 'avatar' | 'photo'
+  bio?: string
+  followerCount?: number
+}
+
+export interface Media {
+  url: string
+  kind: 'image' | 'video'
+  width?: number
+  height?: number
+  blurhash?: string
+  alt?: string
+  /** a webvtt caption file, when the person who uploaded it provided one */
+  captionsUrl?: string
+}
+
+export interface Update {
+  id: string
+  header: string
+  body: string
+  number: number
+  footer?: string
+  category: Category
+  tags?: string[]
+  link?: string
+  media?: Media[]
+  deadline?: string | null
+  isRemote?: boolean
+  eligibleCountries?: string[]
+  publishedAt: string
+  editedAt?: string | null
+  organization: OrganizationCard
+  author: UserCard | null
+  counts: {
+    love: number
+    comment: number
+    repost: number
+    quote: number
+    bookmark: number
+    testimonial: number
+    tipTotal: number
+  }
+  viewer: {
+    loved: boolean
+    bookmarked: boolean
+    reposted: boolean
+  }
+}
+
+export interface Paginated<T> {
+  items: T[]
+  nextCursor: string | null
+}
+
+export type NotificationKind =
+  | 'new_update'
+  | 'follow'
+  | 'comment'
+  | 'comment_reply'
+  | 'mention'
+  | 'reaction'
+  | 'repost'
+  | 'quote'
+  | 'testimonial_quote'
+  | 'testimonial_comment'
+  | 'org_invite'
+  | 'org_invite_accepted'
+  | 'tip_received'
+  | 'feedback_received'
+
+export interface AppNotification {
+  _id: string
+  kind: NotificationKind
+  actor?: UserCard | null
+  actorOrganization?: OrganizationCard | null
+  subjectType?: string
+  subject?: string
+  preview?: string
+  link?: string
+  readAt?: string | null
+  createdAt: string
+}
+
+export interface Comment {
+  _id: string
+  body: string
+  author: UserCard
+  asOrganization?: OrganizationCard | null
+  parent?: string | null
+  depth: number
+  loveCount: number
+  replyCount: number
+  createdAt: string
+}

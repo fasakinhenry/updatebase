@@ -1,12 +1,13 @@
 import { Outlet } from 'react-router-dom'
 import { RequireAuth } from '@/features/auth/RequireAuth'
+import { AppShell } from '@/components/app/AppShell'
 
 export default function AppLayout() {
   return (
     <RequireAuth step="app">
-      <div className="flex min-h-svh flex-col bg-canvas">
+      <AppShell>
         <Outlet />
-      </div>
+      </AppShell>
     </RequireAuth>
   )
 }

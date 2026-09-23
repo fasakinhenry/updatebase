@@ -20,6 +20,8 @@
   ],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "react/incompatible-library": "off"
+    "react/incompatible-library": "off",
+    "eslint/no-underscore-dangle": "off",
+    "jsx-a11y/media-has-caption": "off"
   }
 }
