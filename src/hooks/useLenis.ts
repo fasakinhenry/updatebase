@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 
 /**
  * lenis smooth scroll, wired to gsap's ticker so scroll driven animations and
@@ -7,8 +6,6 @@ import { useLocation } from 'react-router-dom'
  * the user asks for reduced motion.
  */
 export function useLenis(enabled = true) {
-  const { pathname } = useLocation()
-
   useEffect(() => {
     if (!enabled) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -53,9 +50,4 @@ export function useLenis(enabled = true) {
       dispose()
     }
   }, [enabled])
-
-  // a route change should always start at the top, before the transition paints
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-  }, [pathname])
 }

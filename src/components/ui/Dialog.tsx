@@ -45,6 +45,21 @@ export function Dialog({
   }, [open])
 
   useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    // clicking the backdrop lands on the dialog element itself, since the
+    // backdrop is a pseudo element. bound natively rather than through a react
+    // prop, because the platform already gives us escape via onCancel.
+    const onBackdropClick = (event: MouseEvent) => {
+      if (event.target === node) onClose()
+    }
+
+    node.addEventListener('click', onBackdropClick)
+    return () => node.removeEventListener('click', onBackdropClick)
+  }, [onClose])
+
+  useEffect(() => {
     if (!open) return
     // the page behind must not scroll while a modal owns the screen
     const previous = document.body.style.overflow
@@ -62,10 +77,6 @@ export function Dialog({
       onCancel={(event) => {
         event.preventDefault()
         onClose()
-      }}
-      onClick={(event) => {
-        // a click on the backdrop lands on the dialog element itself
-        if (event.target === ref.current) onClose()
       }}
       className={cn(
         'w-[calc(100vw-2rem)] rounded-2xl border border-hairline bg-canvas p-0 text-ink shadow-raised',

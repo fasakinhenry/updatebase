@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ElementType, type ReactNode } from 'react'
+import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
 interface RevealProps {
@@ -16,8 +16,12 @@ interface RevealProps {
 }
 
 /**
- * reveals children on scroll. above the fold content passes `immediate` so the
- * hero never waits on a scroll trigger, which keeps lcp honest.
+ * reveals children on scroll.
+ *
+ * above the fold content passes `immediate`, which switches to a pure css
+ * entrance. that matters: the hero headline is the lcp element, and if it
+ * started at opacity 0 waiting for gsap to download it would push lcp out by
+ * however long that chunk takes. css animates on the first frame instead.
  */
 export function Reveal({
   children,
@@ -32,6 +36,9 @@ export function Reveal({
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    // the immediate variant is handled entirely in css, no js needed
+    if (immediate) return
+
     const node = ref.current
     if (!node) return
 
@@ -66,9 +73,7 @@ export function Reveal({
             stagger,
             ease: 'power3.out',
             clearProps: 'willChange',
-            ...(immediate
-              ? {}
-              : { scrollTrigger: { trigger: node, start: 'top 88%', once: true } }),
+            scrollTrigger: { trigger: node, start: 'top 88%', once: true },
           },
         )
       }, node)
@@ -83,7 +88,12 @@ export function Reveal({
   }, [y, delay, stagger, self, immediate])
 
   return (
-    <Tag ref={ref} data-reveal={self ? 'self' : ''} className={cn(className)}>
+    <Tag
+      ref={ref}
+      data-reveal={immediate ? 'immediate' : self ? 'self' : ''}
+      style={immediate && delay ? ({ '--reveal-delay': `${delay}s` } as CSSProperties) : undefined}
+      className={cn(className)}
+    >
       {children}
     </Tag>
   )

@@ -47,15 +47,14 @@ export function Accordion({ items, className }: { items: AccordionItem[]; classN
               </button>
             </h3>
 
-            <div
+            <section
               id={panelId}
-              role="region"
               aria-labelledby={triggerId}
               hidden={!expanded}
               className="pb-5"
             >
               <div className="measure text-body text-ink-soft">{item.answer}</div>
-            </div>
+            </section>
           </div>
         )
       })}

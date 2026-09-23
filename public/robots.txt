@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# app surfaces are behind auth and have nothing useful to index
+Disallow: /app/
+Disallow: /onboarding/
+Disallow: /auth
+
 Sitemap: https://updatebase.app/sitemap.xml

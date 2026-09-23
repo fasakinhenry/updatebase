@@ -3,29 +3,10 @@ import { Cookie } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { SmartLink } from '@/components/ui/SmartLink'
+import { ConsentOption } from '@/components/ui/ConsentOption'
+import { CONSENT_OPTIONS, type ToggleableConsent } from '@/lib/consentOptions'
 import { DEFAULT_CONSENT, readConsent, writeConsent, type ConsentPreferences } from '@/lib/consent'
 import { cn } from '@/lib/cn'
-
-const options = [
-  {
-    key: 'essential' as const,
-    label: 'essential',
-    description: 'keeps you signed in and keeps your account secure. always on.',
-    locked: true,
-  },
-  {
-    key: 'analytics' as const,
-    label: 'analytics',
-    description: 'tells us which pages work and which ones lose people.',
-    locked: false,
-  },
-  {
-    key: 'personalization' as const,
-    label: 'personalization',
-    description: 'uses what you open to pick the updates you see first.',
-    locked: false,
-  },
-]
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false)
@@ -50,8 +31,7 @@ export function CookieConsent() {
 
   return (
     <>
-      <div
-        role="region"
+      <section
         aria-label="cookie preferences"
         className={cn(
           'fixed inset-x-0 bottom-0 z-[90] px-4 pb-4 sm:left-auto sm:right-6 sm:max-w-md sm:pb-6',
@@ -60,7 +40,12 @@ export function CookieConsent() {
       >
         <div className="rounded-2xl border border-hairline bg-canvas p-5 shadow-raised">
           <div className="flex items-start gap-3">
-            <Cookie size={20} weight="fill" aria-hidden="true" className="mt-0.5 shrink-0 text-primary" />
+            <Cookie
+              size={20}
+              weight="fill"
+              aria-hidden="true"
+              className="mt-0.5 shrink-0 text-primary"
+            />
             <div className="min-w-0">
               <p className="text-label text-ink">we use a few cookies</p>
               <p className="mt-1.5 text-body-sm text-ink-soft">
@@ -93,7 +78,7 @@ export function CookieConsent() {
             </Button>
           </div>
         </div>
-      </div>
+      </section>
 
       <Dialog
         open={managing}
@@ -110,42 +95,19 @@ export function CookieConsent() {
         }
       >
         <ul className="flex flex-col gap-3">
-          {options.map((option) => {
-            const checked = option.locked ? true : prefs[option.key]
-            return (
-              <li key={option.key}>
-                <label
-                  className={cn(
-                    'flex items-start gap-3 rounded-xl border border-hairline p-4 transition-colors duration-fast',
-                    option.locked ? 'cursor-not-allowed bg-surface' : 'hover:border-hairline-strong',
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    disabled={option.locked}
-                    onChange={(event) =>
-                      setPrefs((current) => ({ ...current, [option.key]: event.target.checked }))
-                    }
-                    className="mt-0.5 size-4 shrink-0 accent-primary"
-                  />
-                  <span className="min-w-0">
-                    <span className="block text-label text-ink">
-                      {option.label}
-                      {option.locked && (
-                        <span className="ml-2 text-caption font-normal text-ink-muted">
-                          always on
-                        </span>
-                      )}
-                    </span>
-                    <span className="mt-1 block text-body-sm text-ink-soft">
-                      {option.description}
-                    </span>
-                  </span>
-                </label>
-              </li>
-            )
-          })}
+          {CONSENT_OPTIONS.map((option) => (
+            <li key={option.key}>
+              <ConsentOption
+                label={option.label}
+                description={option.description}
+                locked={option.locked}
+                checked={option.locked ? true : prefs[option.key as ToggleableConsent]}
+                onChange={(checked) =>
+                  setPrefs((current) => ({ ...current, [option.key]: checked }))
+                }
+              />
+            </li>
+          ))}
         </ul>
       </Dialog>
     </>

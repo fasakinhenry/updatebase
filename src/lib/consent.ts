@@ -8,7 +8,7 @@ export interface ConsentPreferences {
 const STORAGE_KEY = 'updatebase:consent'
 const VERSION = 1
 
-interface StoredConsent extends ConsentPreferences {
+export interface StoredConsent extends ConsentPreferences {
   version: number
   decidedAt: string
 }
@@ -52,4 +52,42 @@ export function hasConsent(kind: keyof ConsentPreferences): boolean {
   const stored = readConsent()
   if (!stored) return kind === 'essential'
   return Boolean(stored[kind])
+}
+
+/** subscribe to consent changes, for useSyncExternalStore. */
+export function subscribeToConsent(onChange: () => void) {
+  window.addEventListener('updatebase:consent', onChange)
+  window.addEventListener('storage', onChange)
+  return () => {
+    window.removeEventListener('updatebase:consent', onChange)
+    window.removeEventListener('storage', onChange)
+  }
+}
+
+let cachedRaw: string | null = null
+let cachedValue: StoredConsent | null = null
+
+/**
+ * a stable snapshot. useSyncExternalStore compares by identity, so parsing
+ * fresh every call would loop forever. we only reparse when the raw string
+ * actually changed.
+ */
+export function consentSnapshot(): StoredConsent | null {
+  let raw: string | null = null
+  try {
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch {
+    raw = null
+  }
+
+  if (raw !== cachedRaw) {
+    cachedRaw = raw
+    cachedValue = readConsent()
+  }
+
+  return cachedValue
+}
+
+export function consentServerSnapshot(): StoredConsent | null {
+  return null
 }
