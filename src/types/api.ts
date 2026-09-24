@@ -290,3 +290,62 @@ export interface RenderResult {
   renderings: Record<string, string>
   limits: Record<string, number>
 }
+
+export interface Testimonial {
+  _id: string
+  body: string
+  author: UserCard
+  quotedUpdates: Update[]
+  media?: Media[]
+  celebrateCount: number
+  commentCount: number
+  repostCount: number
+  bookmarkCount: number
+  publishedAt: string
+  viewer: {
+    celebrated: boolean
+    bookmarked: boolean
+  }
+}
+
+export interface BookmarkEntry {
+  bookmarkId: string
+  bookmarkedAt: string
+  note?: string
+  type: 'update' | 'testimonial'
+  subject: Update | Testimonial
+}
+
+export interface ParsedQuery {
+  keywords: string
+  categories: Category[]
+  isRemote: boolean | null
+  closingWithinDays: number | null
+  country: string | null
+  intent: 'updates' | 'people' | 'organizations' | 'mixed'
+}
+
+export interface SearchResults {
+  understood: ParsedQuery
+  updates: Update[]
+  people: UserCard[]
+  organizations: OrganizationCard[]
+  testimonials: Testimonial[]
+}
+
+export interface Suggestions {
+  organizations: (OrganizationCard & { kind: 'organization'; bio?: string; tagline?: string })[]
+  people: (UserCard & { kind: 'user' })[]
+}
+
+export interface Trending {
+  updates: Update[]
+  topics: { tag: string; count: number; engagement: number }[]
+  categories: Category[]
+}
+
+export interface Profile extends User {
+  organizations: { organization: OrganizationCard; role: OrgRole }[]
+  counts: { testimonials: number; updates: number }
+  viewer: { following: boolean; isSelf: boolean }
+}
