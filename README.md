@@ -1,4 +1,6 @@
-# updatebase: Every Opportunity Your Community Shares
+# updatebase 🔥
+
+> revolutionizing the future of information with AI
 
 ## Project Brief (StackStart Hackathon Submission)
 
