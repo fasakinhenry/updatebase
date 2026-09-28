@@ -136,7 +136,7 @@ updatebase specifically solves **community opportunity publishing** end-to-end:
 ## Vision
 To become the default publishing infrastructure for opportunity-led communities in Africa and beyond—where no life-changing opportunity is missed because it was badly formatted, poorly distributed, or impossible to rediscover.
 
-## StackStart Judge Takeaway
+## StacStart Judge Takeaway
 updatebase is a focused, high-utility product that addresses a real operational bottleneck with clear social impact. It combines practical AI assistance, workflow design, and community economics into a single platform that turns chaotic opportunity sharing into reliable opportunity access.
 
 > Made with 💙 by Fasakin Henry
