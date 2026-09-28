@@ -27,19 +27,19 @@ export default function UserProfilePage() {
   })
 
   const followMutation = useMutation({
-    mutationFn: () => api.post(/api/follows/users/ + profile?.id),
+    mutationFn: () => api.post('/api/follows/users/' + profile?.id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['profile', username] })
-      toast.success('followed', you are now following @ + username)
+      toast.success('followed', 'you are now following @' + username)
     },
     onError: () => toast.error('error', 'could not follow user')
   })
 
   const unfollowMutation = useMutation({
-    mutationFn: () => api.delete(/api/follows/users/ + profile?.id),
+    mutationFn: () => api.delete('/api/follows/users/' + profile?.id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['profile', username] })
-      toast.success('unfollowed', you are no longer following @ + username)
+      toast.success('unfollowed', 'you are no longer following @' + username)
     },
     onError: () => toast.error('error', 'could not unfollow user')
   })
@@ -53,7 +53,7 @@ export default function UserProfilePage() {
   } = useInfiniteQuery({
     queryKey: ['profile', username, 'updates'],
     queryFn: ({ pageParam }) =>
-      api.get<Paginated<Update>>(/api/users/ + username + /updates, {
+      api.get<Paginated<Update>>('/api/users/' + username + '/updates', {
         limit: 20,
         cursor: pageParam || undefined
       }),
@@ -71,7 +71,7 @@ export default function UserProfilePage() {
   } = useInfiniteQuery({
     queryKey: ['profile', username, 'testimonials'],
     queryFn: ({ pageParam }) =>
-      api.get<Paginated<Testimonial>>(/api/users/ + username + /testimonials, {
+      api.get<Paginated<Testimonial>>('/api/users/' + username + '/testimonials', {
         limit: 20,
         cursor: pageParam || undefined
       }),
@@ -187,7 +187,7 @@ export default function UserProfilePage() {
             {isUpdatesLoading ? (
               <UpdateSkeletonList count={3} />
             ) : updatesData?.pages[0].items.length === 0 ? (
-              <EmptyState icon={UserCircle} title="no updates" description={@ + username +  hasn't posted any updates yet.} />
+              <EmptyState icon={UserCircle} title="no updates" description={'@' + username + " hasn't posted any updates yet."} />
             ) : (
               <div className="flex flex-col">
                 {updatesData?.pages.map((page, i) => (
@@ -216,7 +216,7 @@ export default function UserProfilePage() {
             {isTestimonialsLoading ? (
               <div className="flex justify-center py-10"><Spinner label="loading testimonials" /></div>
             ) : testimonialsData?.pages[0].items.length === 0 ? (
-              <EmptyState icon={UserCircle} title="no testimonials" description={@ + username +  hasn't written any testimonials.} />
+              <EmptyState icon={UserCircle} title="no testimonials" description={'@' + username + " hasn't written any testimonials."} />
             ) : (
               <div className="flex flex-col gap-4 px-4 py-2">
                 {testimonialsData?.pages.map((page, i) => (
