@@ -1,11 +1,14 @@
-# updatebase — Every Opportunity Your Community Shares
+# updatebase: Every Opportunity Your Community Shares
 
 ## Project Brief (StackStart Hackathon Submission)
 
-## One-line Summary
+## Summary
 updatebase helps community leaders turn raw opportunities (scholarships, jobs, hackathons, internships) into clean, branded, numbered multi-channel updates in under a minute, while also creating a searchable opportunity feed members can actually use.
 
+It also helps everyone get access to updates around them or even global updates that can change their life forever and they can see testimonials regarding an update in real-time so they can verify updates they receive all in one place.
+
 ## The Problem We Are Solving
+
 Community organizers in fast-growing WhatsApp/Telegram/X communities spend too much time manually rewriting the same opportunity post over and over, and members still miss opportunities because chat streams are noisy, unstructured, and hard to search.
 
 This is not only a productivity problem; it is an access problem. When quality opportunities are hard to package and discover, fewer people apply in time, fewer people benefit, and fewer success stories return to strengthen the community cycle.
@@ -15,7 +18,7 @@ This is not only a productivity problem; it is an access problem. When quality o
 Because opportunities are buried in chat threads and quickly disappear in high-message groups.
 
 ### Why #2: Why are opportunities buried?
-Because updates are posted in inconsistent formats, at inconsistent times, and often across fragmented channels.
+Because updates are posted in inconsistent formats, at inconsistent times, and often across fragmented channels without a way to notify members.
 
 ### Why #3: Why is formatting and consistency poor?
 Because organizers and delegates manually copy, rewrite, and adapt each post for every channel.
