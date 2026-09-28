@@ -54,7 +54,7 @@ export default function Bookmarks() {
       if (pageParam) searchParams.set('cursor', pageParam as string)
       if (typeParam) searchParams.set('type', typeParam)
       
-      return api.get<Paginated<BookmarkEntry>>(/api/bookmarks? + searchParams.toString())
+      return api.get<Paginated<BookmarkEntry>>('/api/bookmarks?' + searchParams.toString())
     },
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,

@@ -26,7 +26,7 @@ export default function Testimonials() {
     queryFn: async ({ pageParam }) => {
       const searchParams = new URLSearchParams({ limit: '20' })
       if (pageParam) searchParams.set('cursor', pageParam as string)
-      return api.get<Paginated<Testimonial>>(/api/testimonials? + searchParams.toString())
+      return api.get<Paginated<Testimonial>>('/api/testimonials?' + searchParams.toString())
     },
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
